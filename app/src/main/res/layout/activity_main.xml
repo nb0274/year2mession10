@@ -249,7 +249,7 @@
             android:layout_height="match_parent"
             android:layout_weight="11"
             android:ems="10"
-            android:hint="Whats yo mama's name??"
+            android:hint="What yo dad's name"
             android:inputType="textPostalAddress"
             android:textSize="14sp" />
 
@@ -289,7 +289,7 @@
             android:layout_height="match_parent"
             android:layout_weight="11"
             android:ems="10"
-            android:hint="Gimmi her numberrrr"
+            android:hint="Gimmi his numberrrr"
             android:inputType="phone"
             android:textSize="14sp" />
 
@@ -329,7 +329,7 @@
             android:layout_height="match_parent"
             android:layout_weight="11"
             android:ems="10"
-            android:hint="What bout yo dad??"
+            android:hint="Whats yo mama's name??"
             android:inputType="textPostalAddress"
             android:textSize="14sp" />
 
@@ -369,7 +369,7 @@
             android:layout_height="match_parent"
             android:layout_weight="11"
             android:ems="10"
-            android:hint="Gimmi his number too!"
+            android:hint="Gimmi her number too!"
             android:inputType="phone"
             android:textSize="14sp" />
 

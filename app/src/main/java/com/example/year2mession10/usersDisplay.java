@@ -3,6 +3,7 @@ package com.example.year2mession10;
 import static com.example.year2mession10.Users.USERS;
 import static com.example.year2mession10.Users.USER_FULL_NAME;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,6 +15,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -29,7 +31,7 @@ public class usersDisplay extends AppCompatActivity implements AdapterView.OnIte
     ListView listViewUsers;
     ArrayAdapter<String> adp;
     ArrayList<String> usersTable;
-    Intent in1;
+    Intent in;
     int selectedStudentId;
     AlertDialog.Builder adb;
     AlertDialog ad;
@@ -40,7 +42,7 @@ public class usersDisplay extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users_display);
 
-        in1 = getIntent();
+        in = getIntent();
         context = this;
         listViewUsers = findViewById(R.id.listViewUsers);
         listViewUsers.setOnItemClickListener(this);
@@ -52,18 +54,16 @@ public class usersDisplay extends AppCompatActivity implements AdapterView.OnIte
         usersTable = new ArrayList<>();
         adp = new ArrayAdapter<String>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, usersTable);
         listViewUsers.setAdapter(adp);
-        readStudentsData();
+        dataReader();
     }
 
     /**
-     * This function reads the names and ids of the students from the database and saves them in
-     * the namesTbl array list.
+     * This function reads the names of the users from the database and adds them to the list view.
      */
-    public void readStudentsData() {
+    public void dataReader() {
         String[] columns = {USER_FULL_NAME};
 
         int temp = 0;
-
         String user = "";
         usersTable.clear();
 
@@ -71,13 +71,14 @@ public class usersDisplay extends AppCompatActivity implements AdapterView.OnIte
         cursor = db.query(USERS, columns, null, null, null, null, null);
 
         temp = cursor.getColumnIndex(USER_FULL_NAME);
-
         cursor.moveToFirst();
+
         while (!cursor.isAfterLast()) {
             user = cursor.getString(temp);
             usersTable.add(user);
             cursor.moveToNext();
         }
+
         cursor.close();
         db.close();
         adp.notifyDataSetChanged();
@@ -98,9 +99,9 @@ public class usersDisplay extends AppCompatActivity implements AdapterView.OnIte
         adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                in1.setClass(context, usersDisplay.class);
-                in1.putExtra("StudentId", selectedStudentId);
-                startActivity(in1);
+                in.setClass(context, MainActivity.class);
+                in.putExtra("sid", selectedStudentId);
+                startActivity(in);
             }
         });
 
@@ -129,5 +130,27 @@ public class usersDisplay extends AppCompatActivity implements AdapterView.OnIte
         selectedStudentId = i + 1;
         showAlertDialog(i);
     }
+
+    public boolean onOptionsItemSelected(@NonNull MenuItem item){
+        int id = item.getItemId();
+
+        if(id == R.id.UserInput){
+            in.setClass(this, MainActivity.class);
+            startActivity(in);
+        }
+        else if(id == R.id.GradeInput){
+            in.setClass(this, grade_input_screen.class);
+            startActivity(in);
+        }
+        else if(id == R.id.GradeShow)
+        {
+            in.setClass(this, gradeDisplay.class);
+            startActivity(in);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
+
+
 

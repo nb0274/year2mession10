@@ -2,23 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/User"
+        android:id="@+id/UserInput"
         android:title="New User Registration"
         android:orderInCategory="100"/>
 
     <item
-        android:id="@+id/Grade"
+        android:id="@+id/GradeInput"
         android:title="New Grade Registration"
         android:orderInCategory="200"/>
 
     <item
         android:id="@+id/UserShow"
-        android:title="See the students"
+        android:title="See the user list"
         android:orderInCategory="300"/>
 
     <item
         android:id="@+id/GradeShow"
-        android:title="See the grades"
+        android:title="See the grade list"
         android:orderInCategory="400"/>
 
     <item

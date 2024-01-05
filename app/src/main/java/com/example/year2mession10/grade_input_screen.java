@@ -28,16 +28,9 @@ import static com.example.year2mession10.Grades.QUARTER;
 import static com.example.year2mession10.Grades.SUBJECT;
 import static com.example.year2mession10.Grades.TYPE;
 import static com.example.year2mession10.Users.ACTIVE;
-import static com.example.year2mession10.Users.DAD_FULL_NAME;
-import static com.example.year2mession10.Users.DAD_PHONE_NUMBER;
-import static com.example.year2mession10.Users.HOME_ADDRESS;
-import static com.example.year2mession10.Users.HOME_PHONE_NUMBER;
-import static com.example.year2mession10.Users.MOM_FULL_NAME;
-import static com.example.year2mession10.Users.MOM_PHONE_NUMBER;
 import static com.example.year2mession10.Users.USER_ID;
 import static com.example.year2mession10.Users.USER_FULL_NAME;
 import static com.example.year2mession10.Users.USERS;
-import static com.example.year2mession10.Users.USER_PHONE_NUMBER;
 
 public class grade_input_screen extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -87,6 +80,11 @@ public class grade_input_screen extends AppCompatActivity implements AdapterView
         readNamesAndIds();
     }
 
+    /**
+     * This function is called when the user clicks on the save button.
+     * It checks if all the fields are filled and if so, it saves the grade to the database.
+     * If not, it shows an error message.
+     */
     public void saveGrade(View view) {
         if(!((editTextGradeJ.getText().toString().equals("")) || (editTextSubjectJ.getText().toString().equals("")) || (editTextTypeJ.getText().toString().equals("")) || (editTextQuarterJ.getText().toString().equals("")))) {
             showAlertDialog();
@@ -96,6 +94,9 @@ public class grade_input_screen extends AppCompatActivity implements AdapterView
         }
     }
 
+    /**
+     * This function shows an alert dialog that asks the user if he wants to save the grade.
+     */
     public void showAlertDialog() {
         adb = new AlertDialog.Builder(this);
         adb.setCancelable(false);
@@ -140,6 +141,9 @@ public class grade_input_screen extends AppCompatActivity implements AdapterView
         ad.show();
     }
 
+    /**
+     * This function reads the names and ids of the users from the database and adds them to the spinner.
+     */
     public void readNamesAndIds(){
         String[] columns = {USER_ID, USER_FULL_NAME};
         String[] selectionArgs = {"1"};
@@ -151,7 +155,7 @@ public class grade_input_screen extends AppCompatActivity implements AdapterView
         idListTable = new ArrayList<>();
 
         db = hlp.getReadableDatabase();
-        cursor = db.query(USERS, columns, ACTIVE, selectionArgs, null, null, null);
+        cursor = db.query(USERS, columns, ACTIVE + "=?", selectionArgs, null, null, null);
 
         temp1 = cursor.getColumnIndex(USER_ID);
         temp2 = cursor.getColumnIndex(USER_FULL_NAME);
@@ -178,23 +182,23 @@ public class grade_input_screen extends AppCompatActivity implements AdapterView
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * This function fills the fields with the data of the grade that the user wants to edit.
+     * @param gradeId
+     */
     public void fillFields(int gradeId){
         String[] columns = {GRADE, SUBJECT, TYPE, QUARTER};
         String selection = GRADE_ID + "=?";
         String[] selectionArgs = {"" + gradeId};
 
-        int var1 = 0;
-        int var2 = 0;
-        int var3 = 0;
-        int var4 = 0;
 
         db = hlp.getReadableDatabase();
-        cursor = db.query(USERS, columns, selection, selectionArgs, null, null, null);
+        cursor = db.query(GRADES, columns, selection, selectionArgs, null, null, null);
 
-        var1 = cursor.getColumnIndex(GRADE);
-        var2 = cursor.getColumnIndex(SUBJECT);
-        var3 = cursor.getColumnIndex(TYPE);
-        var4 = cursor.getColumnIndex(QUARTER);
+        int var1 = cursor.getColumnIndex(GRADE);
+        int var2 = cursor.getColumnIndex(SUBJECT);
+        int var3 = cursor.getColumnIndex(TYPE);
+        int var4 = cursor.getColumnIndex(QUARTER);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -209,24 +213,33 @@ public class grade_input_screen extends AppCompatActivity implements AdapterView
         db.close();
     }
 
+    /**
+     * This function is called when the activity starts.
+     * It checks if the user came from the ShowGradesActivity activity and if so, it fills the fields
+     * with the data of the chosen grade.
+     */
     protected void onStart() {
         super.onStart();
 
         in1 = getIntent();
-        gradeId = in1.getIntExtra("GradeId", -1);
+        gradeId = in1.getIntExtra("gid", -1);
 
         if(gradeId != -1)
         {
             flag = false;
-            spinnerUsersJ.setSelection(in1.getIntExtra("StudentIndex", 0));
+            spinnerUsersJ.setSelection(in1.getIntExtra("index", 0));
             fillFields(gradeId);
         }
     }
 
+    /**
+     * This function is called when the user clicks on the back button.
+     * It goes back to the ShowGradesActivity activity.
+     */
     public boolean onOptionsItemSelected(@NonNull MenuItem item){
         int id = item.getItemId();
 
-        if(id == R.id.User){
+        if(id == R.id.UserInput){
             in2.setClass(this, MainActivity.class);
             startActivity(in2);
         }
@@ -235,21 +248,11 @@ public class grade_input_screen extends AppCompatActivity implements AdapterView
             in2.setClass(this, usersDisplay.class);
             startActivity(in2);
         }
-/*        else if(id == R.id.GradeShow)
+        else if(id == R.id.GradeShow)
         {
-            in2.setClass(this, ShowGradesActivity.class);
+            in2.setClass(this, gradeDisplay.class);
             startActivity(in2);
         }
-        else if(id == R.id.Filters)
-        {
-            in2.setClass(this, ShowGradesActivity.class);
-            startActivity(in2);
-        }
-        else if(id == R.id.Credits)
-        {
-            in2.setClass(this, ShowGradesActivity.class);
-            startActivity(in2);
-        }*/
         else
         {
             spinnerUsersJ.setSelection(0);

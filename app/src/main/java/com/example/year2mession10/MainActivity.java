@@ -142,30 +142,20 @@ public class MainActivity extends AppCompatActivity {
         String[] columns = {USER_FULL_NAME, ACTIVE, HOME_ADDRESS, USER_PHONE_NUMBER, HOME_PHONE_NUMBER, DAD_FULL_NAME, DAD_PHONE_NUMBER, MOM_FULL_NAME, MOM_PHONE_NUMBER};
         String selection = USER_ID + "=?";
         String[] selectionArgs = {"" + userId};
-
-        int var1 = 0;
-        int var2 = 0;
-        int var3 = 0;
-        int var4 = 0;
-        int var5 = 0;
-        int var6 = 0;
-        int var7 = 0;
-        int var8 = 0;
-        int var9 = 0;
         int active = 0;
 
         db = hlp.getReadableDatabase();
         cursor = db.query(USERS, columns, selection, selectionArgs, null, null, null);
 
-        var1 = cursor.getColumnIndex(USER_FULL_NAME);
-        var2 = cursor.getColumnIndex(ACTIVE);
-        var3 = cursor.getColumnIndex(HOME_ADDRESS);
-        var4 = cursor.getColumnIndex(USER_PHONE_NUMBER);
-        var5 = cursor.getColumnIndex(HOME_PHONE_NUMBER);
-        var6 = cursor.getColumnIndex(DAD_FULL_NAME);
-        var7 = cursor.getColumnIndex(DAD_PHONE_NUMBER);
-        var8 = cursor.getColumnIndex(MOM_FULL_NAME);
-        var9 = cursor.getColumnIndex(MOM_PHONE_NUMBER);
+        int var1 = cursor.getColumnIndex(USER_FULL_NAME);
+        int var2 = cursor.getColumnIndex(ACTIVE);
+        int var3 = cursor.getColumnIndex(HOME_ADDRESS);
+        int var4 = cursor.getColumnIndex(USER_PHONE_NUMBER);
+        int var5 = cursor.getColumnIndex(HOME_PHONE_NUMBER);
+        int var6 = cursor.getColumnIndex(DAD_FULL_NAME);
+        int var7 = cursor.getColumnIndex(DAD_PHONE_NUMBER);
+        int var8 = cursor.getColumnIndex(MOM_FULL_NAME);
+        int var9 = cursor.getColumnIndex(MOM_PHONE_NUMBER);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -186,11 +176,16 @@ public class MainActivity extends AppCompatActivity {
         isActiveJ.setChecked(active == 1);
     }
 
+    /**
+     * This function is called when the activity starts.
+     * It checks if the user came from the usersDisplay activity and if so, it fills the fields
+     * with the data of the chosen student.
+     */
     protected void onStart() {
         super.onStart();
 
         in1 = getIntent();
-        userId = in1.getIntExtra("StudentId", -1);
+        userId = in1.getIntExtra("sid", -1);
 
         if(userId != -1)
         {
@@ -199,10 +194,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This function is called when the user clicks on the menu.
+     * @param item
+     * @return
+     */
     public boolean onOptionsItemSelected(@NonNull MenuItem item){
         int id = item.getItemId();
 
-        if(id == R.id.Grade){
+        if(id == R.id.GradeInput){
             in2.setClass(this, grade_input_screen.class);
             startActivity(in2);
         }
@@ -211,12 +211,12 @@ public class MainActivity extends AppCompatActivity {
             in2.setClass(this, usersDisplay.class);
             startActivity(in2);
         }
-/*        else if(id == R.id.GradeShow)
+        else if(id == R.id.GradeShow)
         {
-            in2.setClass(this, ShowGradesActivity.class);
+            in2.setClass(this, gradeDisplay.class);
             startActivity(in2);
         }
-        else if(id == R.id.Filters)
+/*        else if(id == R.id.Filters)
         {
             in2.setClass(this, ShowGradesActivity.class);
             startActivity(in2);
