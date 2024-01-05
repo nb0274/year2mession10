@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".InputGradeActivity">
+    tools:context=".grade_input_screen">
 
     <Space
         android:layout_width="match_parent"
@@ -62,7 +62,7 @@
             android:textSize="16sp" />
 
         <Spinner
-            android:id="@+id/SpinnerUsers"
+            android:id="@+id/spinnerUsers"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="7" />
@@ -249,6 +249,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
+            android:onClick="saveGrade"
             android:text="Add grade!!!"
             android:textSize="20sp" />
 

@@ -1,8 +1,11 @@
 package com.example.year2mession10;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,66 +15,161 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+
+import static com.example.year2mession10.Grades.GRADE;
+import static com.example.year2mession10.Grades.GRADES;
+import static com.example.year2mession10.Grades.GRADE_ID;
+import static com.example.year2mession10.Grades.QUARTER;
+import static com.example.year2mession10.Grades.SUBJECT;
+import static com.example.year2mession10.Grades.TYPE;
 import static com.example.year2mession10.Users.ACTIVE;
+import static com.example.year2mession10.Users.DAD_FULL_NAME;
+import static com.example.year2mession10.Users.DAD_PHONE_NUMBER;
+import static com.example.year2mession10.Users.HOME_ADDRESS;
+import static com.example.year2mession10.Users.HOME_PHONE_NUMBER;
+import static com.example.year2mession10.Users.MOM_FULL_NAME;
+import static com.example.year2mession10.Users.MOM_PHONE_NUMBER;
 import static com.example.year2mession10.Users.USER_ID;
 import static com.example.year2mession10.Users.USER_FULL_NAME;
 import static com.example.year2mession10.Users.USERS;
+import static com.example.year2mession10.Users.USER_PHONE_NUMBER;
 
 public class grade_input_screen extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    Intent in;
+
+    AlertDialog.Builder adb;
+    AlertDialog ad;
+    EditText editTextGradeJ;
+    EditText editTextSubjectJ;
+    EditText editTextTypeJ;
+    EditText editTextQuarterJ;
+    Intent in1;
+    Intent in2;
     SQLiteDatabase db;
     HelperDB hlp;
     Cursor cursor;
-    Spinner SpinnerUsersJ;
+    Spinner spinnerUsersJ;
     ArrayAdapter adp;
-    ArrayList<String> namesTbl;
-    ArrayList<Integer> idsTbl;
+    ContentValues cv;
+    ArrayList<String> usersTable;
+    ArrayList<Integer> idListTable;
+    int selectedStudentId;
+    boolean flag;
+    int gradeId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grade_input_screen);
 
-        SpinnerUsersJ = findViewById(R.id.SpinnerUsers);
+        in1 = getIntent();
+        flag = true;
+        spinnerUsersJ = findViewById(R.id.spinnerUsers);
+        spinnerUsersJ.setOnItemSelectedListener(this);
+        editTextGradeJ = findViewById(R.id.editTextGrade);
+        editTextSubjectJ = findViewById(R.id.editTextSubject);
+        editTextTypeJ = findViewById(R.id.editTextType);
+        editTextQuarterJ = findViewById(R.id.editTextQuarter);
+
         hlp = new HelperDB(this);
         db = hlp.getWritableDatabase();
         db.close();
-        readUsersData();
+
+        cv = new ContentValues();
+        usersTable = new ArrayList<>();
+        idListTable = new ArrayList<>();
+        adp = new ArrayAdapter<String>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, usersTable);
+        spinnerUsersJ.setAdapter(adp);
+        readNamesAndIds();
     }
 
-    public void readUsersData(){
+    public void saveGrade(View view) {
+        if(!((editTextGradeJ.getText().toString().equals("")) || (editTextSubjectJ.getText().toString().equals("")) || (editTextTypeJ.getText().toString().equals("")) || (editTextQuarterJ.getText().toString().equals("")))) {
+            showAlertDialog();
+        }
+        else {
+            Toast.makeText(this, "ERROR: There are empty fields", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void showAlertDialog() {
+        adb = new AlertDialog.Builder(this);
+        adb.setCancelable(false);
+        adb.setTitle("Save Grade");
+        adb.setMessage("By pressing Save you will save a new grade to the database");
+
+        adb.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                cv.clear();
+                cv.put(USER_ID, selectedStudentId);
+                cv.put(GRADE, Integer.parseInt(editTextGradeJ.getText().toString()));
+                cv.put(Grades.SUBJECT, editTextSubjectJ.getText().toString());
+                cv.put(Grades.TYPE, editTextTypeJ.getText().toString());
+                cv.put(Grades.QUARTER, Integer.parseInt(editTextQuarterJ.getText().toString()));
+
+                if(flag == true) {
+                    db = hlp.getWritableDatabase();
+                    db.insert(GRADES, null, cv);
+                    db.close();
+
+                    Toast.makeText(grade_input_screen.this, "Grade saves", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    db = hlp.getWritableDatabase();
+                    db.update(GRADES, cv, GRADE_ID+"=?", new String[]{"" + gradeId});
+                    db.close();
+
+                    Toast.makeText(grade_input_screen.this, "Grade updated", Toast.LENGTH_SHORT).show();
+                    flag = true;
+                }
+            }
+        });
+        adb.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        ad = adb.create();
+        ad.show();
+    }
+
+    public void readNamesAndIds(){
         String[] columns = {USER_ID, USER_FULL_NAME};
         String[] selectionArgs = {"1"};
-        int col1 = 0;
-        int col2 = 0;
+        int temp1 = 0;
+        int temp2 = 0;
         int key = 0;
         String name = "";
-        namesTbl = new ArrayList<>();
-        idsTbl = new ArrayList<>();
+        usersTable = new ArrayList<>();
+        idListTable = new ArrayList<>();
 
         db = hlp.getReadableDatabase();
         cursor = db.query(USERS, columns, ACTIVE, selectionArgs, null, null, null);
 
-        col1 = cursor.getColumnIndex(USER_ID);
-        col2 = cursor.getColumnIndex(USER_FULL_NAME);
+        temp1 = cursor.getColumnIndex(USER_ID);
+        temp2 = cursor.getColumnIndex(USER_FULL_NAME);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            key = cursor.getInt(col1);
-            name = cursor.getString(col2);
+            key = cursor.getInt(temp1);
+            name = cursor.getString(temp2);
 
-            idsTbl.add(key);
-            namesTbl.add(name);
+            idListTable.add(key);
+            usersTable.add(name);
 
             cursor.moveToNext();
         }
         cursor.close();
         db.close();
-        adp = new ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, namesTbl);
-        SpinnerUsersJ.setAdapter(adp);
+        adp = new ArrayAdapter(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, usersTable);
+        spinnerUsersJ.setAdapter(adp);
     }
 
     public boolean onCreateOptionsMenu(Menu menu){
@@ -80,12 +178,85 @@ public class grade_input_screen extends AppCompatActivity implements AdapterView
         return super.onCreateOptionsMenu(menu);
     }
 
+    public void fillFields(int gradeId){
+        String[] columns = {GRADE, SUBJECT, TYPE, QUARTER};
+        String selection = GRADE_ID + "=?";
+        String[] selectionArgs = {"" + gradeId};
+
+        int var1 = 0;
+        int var2 = 0;
+        int var3 = 0;
+        int var4 = 0;
+
+        db = hlp.getReadableDatabase();
+        cursor = db.query(USERS, columns, selection, selectionArgs, null, null, null);
+
+        var1 = cursor.getColumnIndex(GRADE);
+        var2 = cursor.getColumnIndex(SUBJECT);
+        var3 = cursor.getColumnIndex(TYPE);
+        var4 = cursor.getColumnIndex(QUARTER);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            editTextGradeJ.setText(cursor.getString(var1));
+            editTextSubjectJ.setText(cursor.getString(var2));
+            editTextTypeJ.setText(cursor.getString(var3));
+            editTextQuarterJ.setText(cursor.getString(var4));
+
+            cursor.moveToNext();
+        }
+        cursor.close();
+        db.close();
+    }
+
+    protected void onStart() {
+        super.onStart();
+
+        in1 = getIntent();
+        gradeId = in1.getIntExtra("GradeId", -1);
+
+        if(gradeId != -1)
+        {
+            flag = false;
+            spinnerUsersJ.setSelection(in1.getIntExtra("StudentIndex", 0));
+            fillFields(gradeId);
+        }
+    }
+
     public boolean onOptionsItemSelected(@NonNull MenuItem item){
         int id = item.getItemId();
 
         if(id == R.id.User){
-            in = new Intent(this, MainActivity.class);
-            startActivity(in);
+            in2.setClass(this, MainActivity.class);
+            startActivity(in2);
+        }
+        else if(id == R.id.UserShow)
+        {
+            in2.setClass(this, usersDisplay.class);
+            startActivity(in2);
+        }
+/*        else if(id == R.id.GradeShow)
+        {
+            in2.setClass(this, ShowGradesActivity.class);
+            startActivity(in2);
+        }
+        else if(id == R.id.Filters)
+        {
+            in2.setClass(this, ShowGradesActivity.class);
+            startActivity(in2);
+        }
+        else if(id == R.id.Credits)
+        {
+            in2.setClass(this, ShowGradesActivity.class);
+            startActivity(in2);
+        }*/
+        else
+        {
+            spinnerUsersJ.setSelection(0);
+            editTextGradeJ.setText("");
+            editTextSubjectJ.setText("");
+            editTextTypeJ.setText("");
+            editTextQuarterJ.setText("");
         }
 
         return super.onOptionsItemSelected(item);
@@ -93,7 +264,7 @@ public class grade_input_screen extends AppCompatActivity implements AdapterView
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+        selectedStudentId = idListTable.get(i);
     }
 
     @Override
