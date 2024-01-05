@@ -27,6 +27,7 @@ import static com.example.year2mession10.Grades.GRADE_ID;
 import static com.example.year2mession10.Grades.QUARTER;
 import static com.example.year2mession10.Grades.SUBJECT;
 import static com.example.year2mession10.Grades.TYPE;
+import static com.example.year2mession10.Grades.USER_ID_FOR_GRADE;
 import static com.example.year2mession10.Users.ACTIVE;
 import static com.example.year2mession10.Users.USER_ID;
 import static com.example.year2mession10.Users.USER_FULL_NAME;
@@ -50,7 +51,7 @@ public class grade_input_screen extends AppCompatActivity implements AdapterView
     ContentValues cv;
     ArrayList<String> usersTable;
     ArrayList<Integer> idListTable;
-    int selectedStudentId;
+    int userId;
     boolean flag;
     int gradeId;
 
@@ -107,7 +108,7 @@ public class grade_input_screen extends AppCompatActivity implements AdapterView
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 cv.clear();
-                cv.put(USER_ID, selectedStudentId);
+                cv.put(USER_ID_FOR_GRADE, userId);
                 cv.put(GRADE, Integer.parseInt(editTextGradeJ.getText().toString()));
                 cv.put(Grades.SUBJECT, editTextSubjectJ.getText().toString());
                 cv.put(Grades.TYPE, editTextTypeJ.getText().toString());
@@ -267,7 +268,7 @@ public class grade_input_screen extends AppCompatActivity implements AdapterView
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        selectedStudentId = idListTable.get(i);
+        userId = idListTable.get(i);
     }
 
     @Override

@@ -8,6 +8,7 @@ import static com.example.year2mession10.Grades.SUBJECT;
 import static com.example.year2mession10.Grades.TYPE;
 import static com.example.year2mession10.Grades.QUARTER;
 
+import static com.example.year2mession10.Grades.USER_ID_FOR_GRADE;
 import static com.example.year2mession10.Users.USERS;
 import static com.example.year2mession10.Users.USER_ID;
 import static com.example.year2mession10.Users.USER_FULL_NAME;
@@ -55,7 +56,8 @@ public class HelperDB extends SQLiteOpenHelper {
         db.execSQL(strCreate);
 
         strCreate = "CREATE TABLE "+GRADES;
-        strCreate += " ("+GRADE_ID+" INTEGER,";
+        strCreate += " ("+GRADE_ID+" INTEGER PRIMARY KEY,";
+        strCreate += " "+USER_ID_FOR_GRADE+" INTEGER,";
         strCreate += " "+GRADE+" REAL,";
         strCreate += " "+SUBJECT+" TEXT,";
         strCreate += " "+TYPE+" TEXT,";

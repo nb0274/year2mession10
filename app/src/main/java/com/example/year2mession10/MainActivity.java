@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
         hlp = new HelperDB(this);
         db = hlp.getWritableDatabase();
+        //hlp.onUpgrade(db, 1, 1);
         db.close();
         cv = new ContentValues();
     }
