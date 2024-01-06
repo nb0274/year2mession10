@@ -73,10 +73,19 @@ public class MainActivity extends AppCompatActivity {
         db.close();
         cv = new ContentValues();
     }
+
+    /**
+     * This function is called when the user clicks on the "Save" button.
+     * It shows an alert dialog that asks the user if he is sure he wants to save the student.
+     */
     public void saveStudent(View view) {
         showAlertDialog();
     }
 
+    /**
+     * This function is called when the user clicks on the "Save" button.
+     * It shows an alert dialog that asks the user if he is sure he wants to save the student.
+     */
     public void showAlertDialog() {
         adb = new AlertDialog.Builder(this);
         adb.setTitle("Are you sure?");
@@ -133,6 +142,10 @@ public class MainActivity extends AppCompatActivity {
         ad.show();
     }
 
+    /**
+     * This function is called when the user clicks on the "Show Users" button.
+     * It opens the usersDisplay activity.
+     */
     public boolean onCreateOptionsMenu(Menu menu){
         getMenuInflater().inflate(R.menu.activity_menu, menu);
 
@@ -196,7 +209,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * This function is called when the user clicks on the menu.
+     * This function is called when the user clicks on one of the options in the menu.
+     * It opens the activity that the user chose.
      * @param item
      * @return
      */
@@ -217,16 +231,16 @@ public class MainActivity extends AppCompatActivity {
             in2.setClass(this, gradeDisplay.class);
             startActivity(in2);
         }
-/*        else if(id == R.id.Filters)
+        else if(id == R.id.Filters)
         {
-            in2.setClass(this, ShowGradesActivity.class);
+            in2.setClass(this, filterActivity.class);
             startActivity(in2);
         }
         else if(id == R.id.Credits)
         {
-            in2.setClass(this, ShowGradesActivity.class);
+            in2.setClass(this, Credits.class);
             startActivity(in2);
-        }*/
+        }
         else
         {
             isActiveJ.setChecked(true);

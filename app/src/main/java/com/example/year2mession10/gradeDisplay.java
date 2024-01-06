@@ -84,8 +84,7 @@ public class gradeDisplay extends AppCompatActivity implements AdapterView.OnIte
     }
 
     /**
-     * This function reads the students ids and names from the table and displays them in the
-     * names spinner.
+     * This function reads the students data from the database, and displays them in the spinner.
      */
     public void userDataReader() {
         String[] columns = {USER_ID, USER_FULL_NAME};
@@ -291,6 +290,16 @@ public class gradeDisplay extends AppCompatActivity implements AdapterView.OnIte
         else if(id == R.id.UserShow)
         {
             in.setClass(this, usersDisplay.class);
+            startActivity(in);
+        }
+        else if(id == R.id.Filters)
+        {
+            in.setClass(this, filterActivity.class);
+            startActivity(in);
+        }
+        else if(id == R.id.Credits)
+        {
+            in.setClass(this, Credits.class);
             startActivity(in);
         }
         return super.onOptionsItemSelected(item);

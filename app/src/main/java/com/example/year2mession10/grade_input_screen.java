@@ -83,8 +83,8 @@ public class grade_input_screen extends AppCompatActivity implements AdapterView
 
     /**
      * This function is called when the user clicks on the save button.
-     * It checks if all the fields are filled and if so, it saves the grade to the database.
-     * If not, it shows an error message.
+     * It checks if all the fields are filled and if so, it calls the showAlertDialog function.
+     * @param view
      */
     public void saveGrade(View view) {
         if(!((editTextGradeJ.getText().toString().equals("")) || (editTextSubjectJ.getText().toString().equals("")) || (editTextTypeJ.getText().toString().equals("")) || (editTextQuarterJ.getText().toString().equals("")))) {
@@ -96,7 +96,7 @@ public class grade_input_screen extends AppCompatActivity implements AdapterView
     }
 
     /**
-     * This function shows an alert dialog that asks the user if he wants to save the grade.
+     * This function shows an alert dialog that asks the user if he is sure he wants to save the grade.
      */
     public void showAlertDialog() {
         adb = new AlertDialog.Builder(this);
@@ -252,6 +252,16 @@ public class grade_input_screen extends AppCompatActivity implements AdapterView
         else if(id == R.id.GradeShow)
         {
             in2.setClass(this, gradeDisplay.class);
+            startActivity(in2);
+        }
+        else if(id == R.id.Filters)
+        {
+            in2.setClass(this, filterActivity.class);
+            startActivity(in2);
+        }
+        else if(id == R.id.Credits)
+        {
+            in2.setClass(this, Credits.class);
             startActivity(in2);
         }
         else

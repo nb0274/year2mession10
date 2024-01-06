@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -85,16 +86,17 @@ public class usersDisplay extends AppCompatActivity implements AdapterView.OnIte
     }
 
     /**
-     * This function shows an alert dialog which asks the user if he wants to show and edit the
-     * data of the chosen student.
+     * This function shows an alert dialog which asks the user if he wants to edit the chosen student.
+     * If the user presses yes, he will be referred to the editing page.
+     * If the user presses cancel, the alert dialog will be closed.
      *
-     * @param chosenStudentIndex The index of the chosen student.
+     * @param index The index of the chosen student.
      */
-    public void showAlertDialog(int chosenStudentIndex) {
+    public void showAlertDialog(int index) {
         adb = new AlertDialog.Builder(this);
         adb.setCancelable(false);
         adb.setTitle("Edit student");
-        adb.setMessage("By pressing Edit will be referred to the editing page" + usersTable.get(chosenStudentIndex) + "?");
+        adb.setMessage("By pressing Edit will be referred to the editing page" + usersTable.get(index) + "?");
 
         adb.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
@@ -131,6 +133,23 @@ public class usersDisplay extends AppCompatActivity implements AdapterView.OnIte
         showAlertDialog(i);
     }
 
+    /**
+     * This function creates the options menu.
+     *
+     * @param menu the menu to create.
+     * @return must return true for the menu to be shown.
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    /**
+     * This function is called when the user clicks on the back button.
+     * It refers the user to the main menu.
+     */
     public boolean onOptionsItemSelected(@NonNull MenuItem item){
         int id = item.getItemId();
 
@@ -145,6 +164,16 @@ public class usersDisplay extends AppCompatActivity implements AdapterView.OnIte
         else if(id == R.id.GradeShow)
         {
             in.setClass(this, gradeDisplay.class);
+            startActivity(in);
+        }
+        else if(id == R.id.Filters)
+        {
+            in.setClass(this, filterActivity.class);
+            startActivity(in);
+        }
+        else if(id == R.id.Credits)
+        {
+            in.setClass(this, Credits.class);
             startActivity(in);
         }
         return super.onOptionsItemSelected(item);
