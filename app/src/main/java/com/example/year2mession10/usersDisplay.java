@@ -56,6 +56,7 @@ public class usersDisplay extends AppCompatActivity implements AdapterView.OnIte
         adp = new ArrayAdapter<String>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, usersTable);
         listViewUsers.setAdapter(adp);
         dataReader();
+
     }
 
     /**
